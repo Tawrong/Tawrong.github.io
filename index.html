@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <main
+      style="
+        max-width: 900px;
+        margin: 32px auto;
+        font-family: Arial, Helvetica, sans-serif;
+      "
+    >
+      <h1>VTT to SRT Converter</h1>
+
+      <div style="margin: 16px 0">
+        <label for="vttInput">Choose one or more .vtt files:</label><br />
+        <input
+          type="file"
+          id="vttInput"
+          accept=".vtt,video/vtt,text/vtt"
+          multiple
+        />
+      </div>
+
+      <div style="margin: 16px 0">
+        <h2>Uploaded files</h2>
+        <p id="noFilesNote">No files uploaded yet.</p>
+        <ul id="fileList" style="list-style: none; padding-left: 0"></ul>
+      </div>
+
+      <div
+        style="margin: 16px 0; display: flex; gap: 12px; align-items: center"
+      >
+        <div style="display: flex; gap: 8px; align-items: center">
+          <button
+            id="convertBtn"
+            disabled
+            style="padding: 10px 16px; font-size: 16px"
+          >
+            Convert
+          </button>
+          <button
+            id="saveBtn"
+            disabled
+            style="padding: 10px 16px; font-size: 16px"
+          >
+            Save to folder
+          </button>
+          <button
+            id="downloadZipBtn"
+            disabled
+            style="padding: 10px 16px; font-size: 16px"
+          >
+            Download ZIP
+          </button>
+        </div>
+      </div>
+
+      <div style="margin: 16px 0">
+        <h2>Converted files</h2>
+        <ul id="resultList" style="list-style: none; padding-left: 0"></ul>
+      </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
