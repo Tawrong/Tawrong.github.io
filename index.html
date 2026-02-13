@@ -1,71 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <main
-      style="
-        max-width: 900px;
-        margin: 32px auto;
-        font-family: Arial, Helvetica, sans-serif;
-      "
-    >
-      <h1>VTT to SRT Converter</h1>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Valentine's Flower</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-      <div style="margin: 16px 0">
-        <label for="vttInput">Choose one or more .vtt files:</label><br />
-        <input
-          type="file"
-          id="vttInput"
-          accept=".vtt,video/vtt,text/vtt"
-          multiple
-        />
-      </div>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
 
-      <div style="margin: 16px 0">
-        <h2>Uploaded files</h2>
-        <p id="noFilesNote">No files uploaded yet.</p>
-        <ul id="fileList" style="list-style: none; padding-left: 0"></ul>
-      </div>
+        #canvas {
+            display: block;
+        }
 
-      <div
-        style="margin: 16px 0; display: flex; gap: 12px; align-items: center"
-      >
-        <div style="display: flex; gap: 8px; align-items: center">
-          <button
-            id="convertBtn"
-            disabled
-            style="padding: 10px 16px; font-size: 16px"
-          >
-            Convert
-          </button>
-          <button
-            id="saveBtn"
-            disabled
-            style="padding: 10px 16px; font-size: 16px"
-          >
-            Save to folder
-          </button>
-          <button
-            id="downloadZipBtn"
-            disabled
-            style="padding: 10px 16px; font-size: 16px"
-          >
-            Download ZIP
-          </button>
-        </div>
-      </div>
+        .text {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 10
+        }
+    </style>
+</head>
+<body>
+    <div class="text">Happy Valentine's Day! 💕 <br> My Love</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000, 0);
+        document.body.appendChild(renderer.domElement);
 
-      <div style="margin: 16px 0">
-        <h2>Converted files</h2>
-        <ul id="resultList" style="list-style: none; padding-left: 0"></ul>
-      </div>
-    </main>
+        camera.position.z = 5;
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
-    <script src="script.js"></script>
-  </body>
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const pointLight = new THREE.PointLight(0xffffff, 0.8);
+        pointLight.position.set(5, 5, 5);
+        scene.add(pointLight);
+
+        // Create flower petals
+        const petalGroup = new THREE.Group();
+        scene.add(petalGroup);
+
+        function createPetal() {
+            const geometry = new THREE.BufferGeometry();
+            const points = [];
+
+            // Create a petal shape using a curve
+            for (let i = 0; i <= 20; i++) {
+                const t = i / 20;
+                const x = Math.sin(t * Math.PI) * 0.3;
+                const y = t * 1.2;
+                const z = Math.cos(t * Math.PI * 2) * 0.1;
+                points.push(new THREE.Vector3(x, y, z));
+            }
+
+            geometry.setFromPoints(points);
+            const material = new THREE.LineBasicMaterial({ color: 0xff69b4, linewidth: 3 });
+            const line = new THREE.Line(geometry, material);
+
+            // Create filled petal using LatheGeometry
+            const petalGeometry = new THREE.LatheGeometry(
+                points.map((p, i) => new THREE.Vector2(Math.sin(i / 20 * Math.PI) * 0.3, i / 20 * 1.2)),
+                8
+            );
+            const petalMaterial = new THREE.MeshPhongMaterial({
+                color: 0xff69b4,
+                emissive: 0xff1493,
+                shininess: 100
+            });
+            const petal = new THREE.Mesh(petalGeometry, petalMaterial);
+
+            return petal;
+        }
+
+        // Add 6 petals arranged in a circle
+        const numPetals = 6;
+        const petals = [];
+        for (let i = 0; i < numPetals; i++) {
+            const petal = createPetal();
+            const angle = (i / numPetals) * Math.PI * 2;
+            petal.rotation.z = angle;
+            petal.position.x = Math.cos(angle) * 0.3;
+            petal.position.y = Math.sin(angle) * 0.3;
+            petalGroup.add(petal);
+            petals.push(petal);
+        }
+
+        // Create flower center
+        const centerGeometry = new THREE.SphereGeometry(0.25, 32, 32);
+        const centerMaterial = new THREE.MeshPhongMaterial({
+            color: 0xffcc00,
+            emissive: 0xffff99,
+            shininess: 100
+        });
+        const center = new THREE.Mesh(centerGeometry, centerMaterial);
+        scene.add(center);
+
+        // Create stem
+        const stemGeometry = new THREE.CylinderGeometry(0.08, 0.08, 3, 16);
+        const stemMaterial = new THREE.MeshPhongMaterial({
+            color: 0x2d5016,
+            emissive: 0x4a7c2f
+        });
+        const stem = new THREE.Mesh(stemGeometry, stemMaterial);
+        stem.position.y = -2.5;
+        scene.add(stem);
+
+        // Create a group for stem and leaves to move together
+        const stemGroup = new THREE.Group();
+        stemGroup.add(stem);
+        scene.add(stemGroup);
+
+        // Create leaves
+        function createLeaf() {
+            const leafGeometry = new THREE.BufferGeometry();
+            const leafPoints = [];
+            for (let i = 0; i <= 10; i++) {
+                const t = i / 10;
+                const x = Math.sin(t * Math.PI) * 0.2;
+                const y = t * 0.8;
+                leafPoints.push(new THREE.Vector3(x, y, 0));
+            }
+            const leafGeometry2 = new THREE.LatheGeometry(
+                leafPoints.map(p => new THREE.Vector2(p.x, p.y)),
+                4
+            );
+            const leafMaterial = new THREE.MeshPhongMaterial({ color: 0x3d6b23 });
+            const leaf = new THREE.Mesh(leafGeometry2, leafMaterial);
+            return leaf;
+        }
+
+        const leaf1 = createLeaf();
+        leaf1.position.set(0.12, -3, 0);
+        leaf1.rotation.x = 0.4;
+        leaf1.rotation.z = -0.5;
+        stemGroup.add(leaf1);
+
+        const leaf2 = createLeaf();
+        leaf2.position.set(-0.12, -2, 0);
+        leaf2.rotation.x = 0.4;
+        leaf2.rotation.z = 0.5;
+        stemGroup.add(leaf2);
+
+        // Animation loop
+        let time = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+
+            time += 0.005;
+
+            // Rotate flower
+            petalGroup.rotation.z += 0.003;
+
+            // Make petals open and close
+            petals.forEach((petal, i) => {
+                const openAmount = Math.sin(time + i * 0.2) * 0.3 + 0.5;
+                const angle = (i / numPetals) * Math.PI * 2;
+                petal.position.x = Math.cos(angle) * (0.3 + openAmount * 0.2);
+                petal.position.y = Math.sin(angle) * (0.3 + openAmount * 0.2);
+                petal.scale.z = openAmount;
+            });
+
+            // Float animation
+            petalGroup.position.y = Math.sin(time * 0.3) * 0.3;
+            center.position.y = Math.sin(time * 0.3) * 0.3;
+            stemGroup.position.y = Math.sin(time * 0.3) * 0.3;
+
+            // Pulsing center
+            center.scale.x = 0.95 + Math.sin(time) * 0.1;
+            center.scale.y = 0.95 + Math.sin(time) * 0.1;
+            center.scale.z = 0.95 + Math.sin(time) * 0.1;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
 </html>
