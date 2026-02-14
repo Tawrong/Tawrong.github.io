@@ -1,210 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Monthsarry My love</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Hi love</title>
+  <style>
+    :root{--size:420px;--petal-size:160px;--radius:150px;--accent:#ff5c8a;--accent-2:#ffb0d1}
+    html,body{height:100%;margin:0}
+    /* light red background with subtle heart pattern */
+    body{display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#ffe6ea,#ffdfe6);font-family:system-ui,Segoe UI,Roboto;position:relative;overflow:hidden}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:0.12;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path fill='%23ffb0d1' d='M12 21s-7.5-4.5-9-8.5C1.8 8 5 4 8.5 5.2 10.1 5.8 11 7 12 7s1.9-1.2 3.5-1.8C19 4 22.2 8 21 11.5 19.5 15.5 12 21 12 21z'/></svg>");background-repeat:repeat;background-size:48px 48px}
+    .stage{width:var(--size);height:var(--size);position:relative}
+    .petal{
+      position:absolute;left:50%;top:50%;width:var(--petal-size);height:var(--petal-size);
+      margin-left:calc(var(--petal-size) / -2);margin-top:calc(var(--petal-size) / -2);
+      border-radius:50%;overflow:hidden;box-shadow:0 8px 18px rgba(0,0,0,.12);transition:transform .35s ease,filter .35s ease;
+      will-change:transform;object-fit:cover;display:block}
+    .petal:hover{transform:scale(1.08) translateZ(0);filter:brightness(1.02) saturate(1.05)}
+    .center{
+      position:absolute;left:50%;top:50%;width:140px;height:140px;margin-left:-70px;margin-top:-70px;
+      border-radius:50%;background:radial-gradient(circle at 30% 20%,#ffd7e8,#ff9ecf);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,.18);z-index:10}
+    .center svg{width:64px;height:64px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.12))}
+    .caption{position:fixed;left:16px;bottom:16px;color:#7a2335;font-weight:600}
 
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: Arial, sans-serif;
-            overflow: hidden;
-        }
+    /* Valentine's header */
+    .header{position:fixed;top:18px;left:50%;transform:translateX(-50%);text-align:center;z-index:30}
+    .title{font-size:24px;color:#7a2238;font-weight:700;letter-spacing:0.4px}
+    .subtitle{font-size:25px; font-weight: bold; color:#9b3a56;margin-top:6px}
 
-        #canvas {
-            display: block;
-        }
+    /* floating hearts layer */
+    .hearts-layer{position:fixed;inset:0;pointer-events:none;z-index:5}
+    .heart{position:absolute;width:18px;height:18px;background:var(--accent);transform:rotate(-45deg);border-radius:4px 4px 0 0;opacity:0.95}
+    .heart::before,.heart::after{content:'';position:absolute;width:18px;height:18px;background:inherit;border-radius:50%}
+    .heart::before{top:-9px;left:0}
+    .heart::after{top:0;left:9px}
+    @keyframes floatUp{
+      0%{transform:translateY(0) rotate(-45deg) scale(1);opacity:1}
+      100%{transform:translateY(-260px) rotate(-45deg) scale(1.15);opacity:0}
+    }
 
-        .text {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            text-align: center;
-            z-index: 10
-        }
-    </style>
+    /* small banner under flower */
+    .banner{position:relative;margin-top:12px;text-align:center}
+    .banner .btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;padding:8px 14px;border-radius:999px;border:0;cursor:pointer;font-weight:700;box-shadow:0 6px 18px rgba(255,92,138,.22)}
+
+   
+    @media (max-width:480px){:root{--size:320px;--petal-size:110px;--radius:110px}}
+  </style>
 </head>
 <body>
-    <div class="text">Happy Valentine's Day! 💕 <br> My Love</div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script>
-        // Scene setup
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x000000, 0);
-        document.body.appendChild(renderer.domElement);
+  <div class="stage" id="flower">
+    <!-- center (decorative) -->
+    <div class="center" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M12 20s-7.5-4.5-9-8.5C1.8 7.9 5 4 8.5 5.2 10.1 5.8 11 7 12 7s1.9-1.2 3.5-1.8C19 4 22.2 7.9 21 11.5 19.5 15.5 12 20 12 20z" fill="#fff" opacity=".85"/>
+      </svg>
+    </div>
+    <!-- petals: will be filled by JS -->
 
-        camera.position.z = 5;
+    <!-- stem and leaf as base -->
+    <div class="stem" aria-hidden="true"></div>
+    <div class="leaf" aria-hidden="true"></div>
+  </div>
 
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        scene.add(ambientLight);
+  <div class="header">
+    <div class="title">Happy Valentine's Day My Love</div>
+    <div class="subtitle">I Love You</div>
+  </div>
 
-        const pointLight = new THREE.PointLight(0xffffff, 0.8);
-        pointLight.position.set(5, 5, 5);
-        scene.add(pointLight);
 
-        // Create flower petals
-        const petalGroup = new THREE.Group();
-        scene.add(petalGroup);
+  <!-- banner removed per request -->
 
-        function createPetal() {
-            const geometry = new THREE.BufferGeometry();
-            const points = [];
+  <div class="hearts-layer" id="hearts"></div>
 
-            // Create a petal shape using a curve
-            for (let i = 0; i <= 20; i++) {
-                const t = i / 20;
-                const x = Math.sin(t * Math.PI) * 0.3;
-                const y = t * 1.2;
-                const z = Math.cos(t * Math.PI * 2) * 0.1;
-                points.push(new THREE.Vector3(x, y, z));
-            }
+  <script>
+    (function(){
+      const imagePaths = [
+        'image1.jpg','image2.jpg','image3.jpg','image4.jpg','image5.jpg','image6.jpg'
+      ];
+      const stage = document.getElementById('flower');
+      const petalCount = 6;
+      const radius = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--radius')) || 150;
+      for(let i=0;i<petalCount;i++){
+        const img = document.createElement('img');
+        img.className = 'petal';
+        img.alt = `Petal ${i+1}`;
+        img.src = imagePaths[i % imagePaths.length];
+        const angle = i * (360 / petalCount);
+        // rotate around center, then counter-rotate so image appears upright
+        img.style.transform = `rotate(${angle}deg) translate(${radius}px) rotate(${-angle}deg)`;
+        // stacking: bring hovered petal above
+        img.style.zIndex = 1;
+        img.addEventListener('mouseenter', ()=> img.style.zIndex = 20);
+        img.addEventListener('mouseleave', ()=> img.style.zIndex = 1);
+        stage.appendChild(img);
+      }
+      // make the whole flower gently pulse
+      let t = 0; setInterval(()=>{
+        t+=0.02; const s = 1 + Math.sin(t)/120;
+        stage.style.transform = `scale(${s})`;
+      },16);
+    })();
+  </script>
+  <script>
+    // Valentine's hearts generator
+    (function(){
+      const layer = document.getElementById('hearts');
+      const colors = ['#ff5c8a','#ff7aa2','#ffb0d1','#ff2d6f'];
+      function makeHeart(x,y,scale,duration,color){
+        const el = document.createElement('div');
+        el.className = 'heart';
+        el.style.left = `${x}px`;
+        el.style.top = `${y}px`;
+        el.style.width = `${16*scale}px`;
+        el.style.height = `${16*scale}px`;
+        el.style.background = color;
+        el.style.animation = `floatUp ${duration}s linear forwards`;
+        el.style.opacity = Math.min(1,0.6+Math.random()*0.6);
+        layer.appendChild(el);
+        setTimeout(()=> el.remove(), (duration*1000)+500);
+      }
 
-            geometry.setFromPoints(points);
-            const material = new THREE.LineBasicMaterial({ color: 0xff69b4, linewidth: 3 });
-            const line = new THREE.Line(geometry, material);
-
-            // Create filled petal using LatheGeometry
-            const petalGeometry = new THREE.LatheGeometry(
-                points.map((p, i) => new THREE.Vector2(Math.sin(i / 20 * Math.PI) * 0.3, i / 20 * 1.2)),
-                8
-            );
-            const petalMaterial = new THREE.MeshPhongMaterial({
-                color: 0xff69b4,
-                emissive: 0xff1493,
-                shininess: 100
-            });
-            const petal = new THREE.Mesh(petalGeometry, petalMaterial);
-
-            return petal;
+      function burst(count=18){
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const cx = w * 0.75;
+        const cy = h * 0.15;
+        for(let i=0;i<count;i++){
+          const angle = Math.random()*Math.PI*2;
+          const dist = 20 + Math.random()*80;
+          const x = cx + Math.cos(angle)*dist + (Math.random()-0.5)*50;
+          const y = cy + Math.sin(angle)*dist + (Math.random()-0.5)*20;
+          const s = 0.6 + Math.random()*1.2;
+          const d = 2 + Math.random()*2.4;
+          const c = colors[Math.floor(Math.random()*colors.length)];
+          makeHeart(x,y,s,d,c);
         }
+      }
 
-        // Add 6 petals arranged in a circle
-        const numPetals = 6;
-        const petals = [];
-        for (let i = 0; i < numPetals; i++) {
-            const petal = createPetal();
-            const angle = (i / numPetals) * Math.PI * 2;
-            petal.rotation.z = angle;
-            petal.position.x = Math.cos(angle) * 0.3;
-            petal.position.y = Math.sin(angle) * 0.3;
-            petalGroup.add(petal);
-            petals.push(petal);
-        }
+      // initial floating hearts
+      for(let i=0;i<28;i++){
+        const x = Math.random()*window.innerWidth;
+        const y = window.innerHeight - Math.random()*140;
+        const s = 0.5 + Math.random()*1.2;
+        const d = 3 + Math.random()*4;
+        const c = colors[Math.floor(Math.random()*colors.length)];
+        setTimeout(()=> makeHeart(x,y,s,d,c), Math.random()*2000);
+      }
 
-        // Create flower center
-        const centerGeometry = new THREE.SphereGeometry(0.25, 32, 32);
-        const centerMaterial = new THREE.MeshPhongMaterial({
-            color: 0xffcc00,
-            emissive: 0xffff99,
-            shininess: 100
-        });
-        const center = new THREE.Mesh(centerGeometry, centerMaterial);
-        scene.add(center);
-
-        // Create stem
-        const stemGeometry = new THREE.CylinderGeometry(0.08, 0.08, 3, 16);
-        const stemMaterial = new THREE.MeshPhongMaterial({
-            color: 0x2d5016,
-            emissive: 0x4a7c2f
-        });
-        const stem = new THREE.Mesh(stemGeometry, stemMaterial);
-        stem.position.y = -2.5;
-        scene.add(stem);
-
-        // Create a group for stem and leaves to move together
-        const stemGroup = new THREE.Group();
-        stemGroup.add(stem);
-        scene.add(stemGroup);
-
-        // Create leaves
-        function createLeaf() {
-            const leafGeometry = new THREE.BufferGeometry();
-            const leafPoints = [];
-            for (let i = 0; i <= 10; i++) {
-                const t = i / 10;
-                const x = Math.sin(t * Math.PI) * 0.2;
-                const y = t * 0.8;
-                leafPoints.push(new THREE.Vector3(x, y, 0));
-            }
-            const leafGeometry2 = new THREE.LatheGeometry(
-                leafPoints.map(p => new THREE.Vector2(p.x, p.y)),
-                4
-            );
-            const leafMaterial = new THREE.MeshPhongMaterial({ color: 0x3d6b23 });
-            const leaf = new THREE.Mesh(leafGeometry2, leafMaterial);
-            return leaf;
-        }
-
-        const leaf1 = createLeaf();
-        leaf1.position.set(0.12, -3, 0);
-        leaf1.rotation.x = 0.4;
-        leaf1.rotation.z = -0.5;
-        stemGroup.add(leaf1);
-
-        const leaf2 = createLeaf();
-        leaf2.position.set(-0.12, -2, 0);
-        leaf2.rotation.x = 0.4;
-        leaf2.rotation.z = 0.5;
-        stemGroup.add(leaf2);
-
-        // Animation loop
-        let time = 0;
-        function animate() {
-            requestAnimationFrame(animate);
-
-            time += 0.005;
-
-            // Rotate flower
-            petalGroup.rotation.z += 0.003;
-
-            // Make petals open and close
-            petals.forEach((petal, i) => {
-                const openAmount = Math.sin(time + i * 0.2) * 0.3 + 0.5;
-                const angle = (i / numPetals) * Math.PI * 2;
-                petal.position.x = Math.cos(angle) * (0.3 + openAmount * 0.2);
-                petal.position.y = Math.sin(angle) * (0.3 + openAmount * 0.2);
-                petal.scale.z = openAmount;
-            });
-
-            // Float animation
-            petalGroup.position.y = Math.sin(time * 0.3) * 0.3;
-            center.position.y = Math.sin(time * 0.3) * 0.3;
-            stemGroup.position.y = Math.sin(time * 0.3) * 0.3;
-
-            // Pulsing center
-            center.scale.x = 0.95 + Math.sin(time) * 0.1;
-            center.scale.y = 0.95 + Math.sin(time) * 0.1;
-            center.scale.z = 0.95 + Math.sin(time) * 0.1;
-
-            renderer.render(scene, camera);
-        }
-
-        animate();
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-    </script>
+      document.getElementById('flower').addEventListener('click', ()=> burst(20));
+    })();
+  </script>
 </body>
 </html>
